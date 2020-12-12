@@ -1,3 +1,6 @@
+import sys
+
+
 class EmpNode:
     def __init__(self, EId):
         self.empId = EId
@@ -40,16 +43,31 @@ class EmpSearchTree:
             print(str(curr_node.empId) + " - " + str(curr_node.attCtr))
             self._print_tree(curr_node.right)
 
+    def _recordSwipeRec(self, eNode, Eid):
+        tree = EmpSearchTree()
+        f = open("inputPS23.txt", "r")
+        lines = f.readlines()
+        for line in lines:
+            tree.insert(line)
+        f.close()
+
+    def _getSwipeRec(self, eNode):
+        tree = EmpSearchTree()
+        f = open("inputPS23.txt", "r")
+        lines = f.readlines()
+        count = 0;
+        for line in lines:
+            tree.insert(line)
+            count += 1
+        f.close()
+        sys.stdout = open("outputPS23.txt", "w")
+        print("Total number of employees recorded today: " + str(count))
+        sys.stdout.close()
+
 
 def main():
-    print("Running main")
-    tree = EmpSearchTree()
-    f = open("inputPS23.txt", "r")
-    lines = f.readlines()
-    for line in lines:
-        tree.insert(line)
-    f.close()
-    tree.print_tree()
+    employeeTree = EmpSearchTree()
+    employeeTree.getSwipeRec(employeeTree)
 
 
 if __name__ == '__main__':
