@@ -1,0 +1,7 @@
+onPremises:41
+
+checkEmp:121
+
+freqVisit:41
+
+range:10:100
