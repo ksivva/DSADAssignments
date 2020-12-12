@@ -49,7 +49,6 @@ def main():
     for line in lines:
         tree.insert(line)
     f.close()
-    print("Inserted values in tree")
     tree.print_tree()
 
 
