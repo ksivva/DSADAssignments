@@ -1,7 +1,14 @@
+onPremises:23
+onPremises:22
 onPremises:41
+onPremises:121
 
 checkEmp:121
+checkEmp:23
+checkEmp:22
+checkEmp:41
+checkEmp:100
 
-freqVisit:41
+freqVisit:1
 
 range:10:100

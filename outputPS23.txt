@@ -1,1 +1,10 @@
-Total number of employees recorded today: 8
+1
+2
+3
+2
+Employee id 121 swiped 2 times today and is currently outside office
+Employee id 23 swiped 1 times today and is currently in office
+Employee id 22 swiped 2 times today and is currently outside office
+Employee id 41 swiped 3 times today and is currently in office
+Employee id 100 did not swipe today
+2 employees still on premises
