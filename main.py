@@ -94,7 +94,7 @@ class EmpSearchTree:
         else:
             return None
 
-    def _recordSwipeRec(self, eNode, Eid):
+    def _recordSwipeRec(self):
         tree = EmpSearchTree()
         f = open(INPUT_FILE_NAME, READ_MODE)
         lines = f.readlines()
