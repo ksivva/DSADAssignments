@@ -163,14 +163,16 @@ def printRangePresent(employee_tree, lines, prompt):
     max_value = prompt[len(RANGE):].rstrip().split(":")[1]
     print("Range: " + str(min_value) + " to " + str(max_value))
     print("Employee swipe : ")
+    lines = set(lines)
     for employee_id in lines:
         employee_id = employee_id.rstrip()
-        if employee_id.isnumeric():
+        if employee_id.isnumeric() and min_value.isnumeric() and max_value.isnumeric():
             if int(min_value) <= int(employee_id) <= int(max_value):
                 employee = employee_tree.search(employee_id)
                 print(str(employee_id) + " , " + str(employee.attCtr) + " , " + isEmployeeInOrOut(employee.attCtr))
         else:
-            print(str(employee_id) + " is not a number. Please enter a numeric value")
+            print(str(employee_id) + " or " + str(min_value) + " or " + str(
+                max_value) + " is not a number. Please enter a numeric value")
 
 
 def checkEmpRec(employee_tree, prompt):
