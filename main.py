@@ -99,7 +99,11 @@ class EmpSearchTree:
         f = open(INPUT_FILE_NAME, READ_MODE)
         lines = f.readlines()
         for line in lines:
-            tree.insert(line)
+            line = line.rstrip()
+            if line.isnumeric():
+                tree.insert(line)
+            else:
+                print(str(line) + " is not a number. Please enter a numeric value")
         f.close()
 
     def getSwipeRec(self):
@@ -108,8 +112,12 @@ class EmpSearchTree:
         lines = f.readlines()
         count = 0
         for line in lines:
-            tree.insert(line.rstrip())
-            count += 1
+            line = line.rstrip()
+            if line.isnumeric():
+                tree.insert(line)
+                count += 1
+            else:
+                print(str(line) + " is not a number. Please enter a numeric value")
         return count
 
 
@@ -123,7 +131,11 @@ def main():
     f = open(INPUT_FILE_NAME, READ_MODE)
     lines = f.readlines()
     for line in lines:
-        employee_tree.insert(line.rstrip())
+        line = line.rstrip()
+        if line.isnumeric():
+            employee_tree.insert(line)
+        else:
+            print(str(line) + " is not a number. Please enter a numeric value")
     p = open(PROMPTS_FILE_NAME, READ_MODE)
     prompts = p.readlines()
     for prompt in prompts:
@@ -136,9 +148,9 @@ def main():
         if prompt.startswith(CHECK_EMP, 0, len(prompt)):
             checkEmpRec(employee_tree, prompt)
         if prompt.startswith(FREQ_VISIT, 0, len(prompt)):
-            freqVisit = prompt[len(FREQ_VISIT):].rstrip()
-            print("Employees that swiped more than " + str(freqVisit) + " number of times today are: ")
-            employee_tree.frequentVisitorRec(freqVisit)
+            freq_visit = prompt[len(FREQ_VISIT):].rstrip()
+            print("Employees that swiped more than " + str(freq_visit) + " number of times today are: ")
+            employee_tree.frequentVisitorRec(freq_visit)
         if prompt.startswith(RANGE, 0, len(prompt)):
             printRangePresent(employee_tree, lines, prompt)
 
@@ -153,29 +165,35 @@ def printRangePresent(employee_tree, lines, prompt):
     print("Employee swipe : ")
     for employee_id in lines:
         employee_id = employee_id.rstrip()
-        if int(min_value) <= int(employee_id) <= int(max_value):
-            employee = employee_tree.search(employee_id)
-            print(str(employee_id) + " , " + str(employee.attCtr) + " , " + isEmployeeInOrOut(employee.attCtr))
+        if employee_id.isnumeric():
+            if int(min_value) <= int(employee_id) <= int(max_value):
+                employee = employee_tree.search(employee_id)
+                print(str(employee_id) + " , " + str(employee.attCtr) + " , " + isEmployeeInOrOut(employee.attCtr))
+        else:
+            print(str(employee_id) + " is not a number. Please enter a numeric value")
 
 
 def checkEmpRec(employee_tree, prompt):
     employee_id = prompt[len(CHECK_EMP):].rstrip()
-    employee = employee_tree.search(employee_id)
-    if employee is not None:
-        if isNumberEven(employee.attCtr):
-            print(
-                "Employee id " + str(employee.empId) + " swiped " + str(
-                    employee.attCtr) + " times today and is "
-                                       "currently outside "
-                                       "office")
+    if employee_id.isnumeric():
+        employee = employee_tree.search(employee_id)
+        if employee is not None:
+            if isNumberEven(employee.attCtr):
+                print(
+                    "Employee id " + str(employee.empId) + " swiped " + str(
+                        employee.attCtr) + " times today and is "
+                                           "currently outside "
+                                           "office")
+            else:
+                print(
+                    "Employee id " + str(employee.empId) + " swiped " + str(
+                        employee.attCtr) + " times today and is "
+                                           "currently in "
+                                           "office")
         else:
-            print(
-                "Employee id " + str(employee.empId) + " swiped " + str(
-                    employee.attCtr) + " times today and is "
-                                       "currently in "
-                                       "office")
+            print("Employee id " + str(employee_id) + " did not swipe today")
     else:
-        print("Employee id " + str(employee_id) + " did not swipe today")
+        print(str(employee_id) + " is not a number. Please enter a numeric value")
 
 
 def isNumberEven(number):
