@@ -1,5 +1,23 @@
 import sys
 
+ON_PREMISES = 'onPremises:'
+
+WRITE_MODE = "w"
+
+READ_MODE = "r"
+
+OUTPUT_FILE_NAME = "outputPS23.txt"
+
+PROMPTS_FILE_NAME = "promptsPS23.txt"
+
+INPUT_FILE_NAME = "inputPS23.txt"
+
+RANGE = "range:"
+
+FREQ_VISIT = "freqVisit:"
+
+CHECK_EMP = 'checkEmp:'
+
 
 class EmpNode:
     def __init__(self, EId):
@@ -20,6 +38,9 @@ class EmpSearchTree:
             self._insert(EId, self.root)
 
     def _insert(self, EId, curr_node):
+        if EId == curr_node.empId:
+            curr_node.attCtr = curr_node.attCtr + 1
+            return curr_node
         if EId < curr_node.empId:
             if curr_node.left is None:
                 curr_node.left = EmpNode(EId)
@@ -33,15 +54,29 @@ class EmpSearchTree:
         if EId == curr_node.empId:
             curr_node.attCtr = curr_node.attCtr + 1
 
-    def print_tree(self):
+    def frequentVisitorRec(self, freq_visit):
         if self.root is not None:
-            self._print_tree(self.root)
+            self._frequentVisitorRec(self.root, freq_visit)
 
-    def _print_tree(self, curr_node):
+    def _frequentVisitorRec(self, curr_node, freq_visit):
         if curr_node is not None:
-            self._print_tree(curr_node.left)
-            print(str(curr_node.empId) + " - " + str(curr_node.attCtr))
-            self._print_tree(curr_node.right)
+            self._frequentVisitorRec(curr_node.left, freq_visit)
+            if curr_node.attCtr > int(freq_visit):
+                print(str(curr_node.empId) + " , " + str(curr_node.attCtr))
+            self._frequentVisitorRec(curr_node.right, freq_visit)
+
+    def onPremisesRec(self, count_of_employees_on_premises):
+        if self.root is not None:
+            count_of_employees_on_premises = self._onPremisesRec(self.root, count_of_employees_on_premises)
+        return count_of_employees_on_premises
+
+    def _onPremisesRec(self, curr_node, count_of_employees_on_premises):
+        if curr_node is not None:
+            self._onPremisesRec(curr_node.left, count_of_employees_on_premises)
+            if curr_node.attCtr % 2 != 0:
+                count_of_employees_on_premises = count_of_employees_on_premises + 1
+            count_of_employees_on_premises = self._onPremisesRec(curr_node.right, count_of_employees_on_premises)
+        return count_of_employees_on_premises
 
     def search(self, value):
         if self.root is not None:
@@ -61,48 +96,48 @@ class EmpSearchTree:
 
     def _recordSwipeRec(self, eNode, Eid):
         tree = EmpSearchTree()
-        f = open("inputPS23.txt", "r")
+        f = open(INPUT_FILE_NAME, READ_MODE)
         lines = f.readlines()
         for line in lines:
             tree.insert(line)
         f.close()
 
-    def _getSwipeRec(self, eNode):
+    def getSwipeRec(self):
         tree = EmpSearchTree()
-        f = open("inputPS23.txt", "r")
+        f = open(INPUT_FILE_NAME, READ_MODE)
         lines = f.readlines()
-        count = 0;
+        count = 0
         for line in lines:
-            tree.insert(line)
+            tree.insert(line.rstrip())
             count += 1
-        f.close()
-        sys.stdout = open("outputPS23.txt", "w")
-        print("Total number of employees recorded today: " + str(count))
-        sys.stdout.close()
+        return count
 
 
 def main():
-    employeeTree = EmpSearchTree()
+    employee_tree = EmpSearchTree()
     count_of_employees_on_premises = 0
-    count_of_employees_greater_than_freq = 0
-    # employeeTree.getSwipeRec(employeeTree)
-    f = open("inputPS23.txt", "r")
+    sys.stdout = open(OUTPUT_FILE_NAME, WRITE_MODE)
+
+    emploee_count = employee_tree.getSwipeRec()
+    print("Total number of employees recorded today: " + str(emploee_count))
+    f = open(INPUT_FILE_NAME, READ_MODE)
     lines = f.readlines()
     for line in lines:
-        employeeTree.insert(line.rstrip())
-    f.close()
-    p = open("promptsPS23.txt", "r")
+        employee_tree.insert(line.rstrip())
+    p = open(PROMPTS_FILE_NAME, READ_MODE)
     prompts = p.readlines()
-    sys.stdout = open("outputPS23.txt", "w")
     for prompt in prompts:
-        if prompt.startswith('onPremises:', 0, len(prompt)):
-            count_of_employees_on_premises = get_employee_count_on_premises(count_of_employees_on_premises,
-                                                                            employeeTree, prompt)
-        if prompt.startswith('checkEmp:', 0, len(prompt)):
-            employee_id = prompt[len("checkEmp:"):].rstrip()
-            employee = employeeTree.search(employee_id)
+        if prompt.startswith(ON_PREMISES, 0, len(prompt)):
+            count_of_employees_on_premises = employee_tree.onPremisesRec(count_of_employees_on_premises)
+            if count_of_employees_on_premises == 0:
+                print("No employees present on premises.")
+            else:
+                print(str(count_of_employees_on_premises) + " employees still on premises")
+        if prompt.startswith(CHECK_EMP, 0, len(prompt)):
+            employee_id = prompt[len(CHECK_EMP):].rstrip()
+            employee = employee_tree.search(employee_id)
             if employee is not None:
-                if employee.attCtr % 2 == 0:
+                if isNumberEven(employee.attCtr):
                     print(
                         "Employee id " + str(employee.empId) + " swiped " + str(
                             employee.attCtr) + " times today and is "
@@ -116,23 +151,39 @@ def main():
                                                "office")
             else:
                 print("Employee id " + str(employee_id) + " did not swipe today")
-
-    if count_of_employees_on_premises == 0:
-        print("No employees present on premises.")
-    else:
-        print(str(count_of_employees_on_premises) + " employees still on premises")
+        if prompt.startswith(FREQ_VISIT, 0, len(prompt)):
+            freqVisit = prompt[len(FREQ_VISIT):].rstrip()
+            print("Employees that swiped more than " + str(freqVisit) + " number of times today are: ")
+            employee_tree.frequentVisitorRec(freqVisit)
+        if prompt.startswith(RANGE, 0, len(prompt)):
+            min_value = prompt[len(RANGE):].rstrip().split(":")[0]
+            max_value = prompt[len(RANGE):].rstrip().split(":")[1]
+            print("Range: " + str(min_value) + " to " + str(max_value))
+            print("Employee swipe : ")
+            for employee_id in lines:
+                employee_id = employee_id.rstrip()
+                if int(min_value) <= int(employee_id) <= int(max_value):
+                    employee = employee_tree.search(employee_id)
+                    print(str(employee_id) + " , " + str(employee.attCtr) + " , " + isEmployeeInOrOut(employee.attCtr))
 
     sys.stdout.close()
+    f.close()
 
 
-def get_employee_count_on_premises(count_of_employees_on_premises, employeeTree, prompt):
-    employee_id = prompt[len("onPremises:"):].rstrip()
-    employee = employeeTree.search(employee_id)
-    if employee is not None:
-        print(employee.attCtr)
-        if employee.attCtr % 2 != 0:
-            count_of_employees_on_premises = count_of_employees_on_premises + 1
-    return count_of_employees_on_premises
+def isNumberEven(number):
+    if number % 2 == 0:
+        result = True
+    else:
+        result = False
+    return result
+
+
+def isEmployeeInOrOut(swipeCount):
+    if isNumberEven(swipeCount):
+        result = "out"
+    else:
+        result = "in"
+    return result
 
 
 if __name__ == '__main__':

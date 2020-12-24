@@ -1,7 +1,4 @@
-onPremises:23
-onPremises:22
-onPremises:41
-onPremises:121
+onPremises:
 
 checkEmp:121
 checkEmp:23
