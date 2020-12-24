@@ -134,40 +134,48 @@ def main():
             else:
                 print(str(count_of_employees_on_premises) + " employees still on premises")
         if prompt.startswith(CHECK_EMP, 0, len(prompt)):
-            employee_id = prompt[len(CHECK_EMP):].rstrip()
-            employee = employee_tree.search(employee_id)
-            if employee is not None:
-                if isNumberEven(employee.attCtr):
-                    print(
-                        "Employee id " + str(employee.empId) + " swiped " + str(
-                            employee.attCtr) + " times today and is "
-                                               "currently outside "
-                                               "office")
-                else:
-                    print(
-                        "Employee id " + str(employee.empId) + " swiped " + str(
-                            employee.attCtr) + " times today and is "
-                                               "currently in "
-                                               "office")
-            else:
-                print("Employee id " + str(employee_id) + " did not swipe today")
+            checkEmpRec(employee_tree, prompt)
         if prompt.startswith(FREQ_VISIT, 0, len(prompt)):
             freqVisit = prompt[len(FREQ_VISIT):].rstrip()
             print("Employees that swiped more than " + str(freqVisit) + " number of times today are: ")
             employee_tree.frequentVisitorRec(freqVisit)
         if prompt.startswith(RANGE, 0, len(prompt)):
-            min_value = prompt[len(RANGE):].rstrip().split(":")[0]
-            max_value = prompt[len(RANGE):].rstrip().split(":")[1]
-            print("Range: " + str(min_value) + " to " + str(max_value))
-            print("Employee swipe : ")
-            for employee_id in lines:
-                employee_id = employee_id.rstrip()
-                if int(min_value) <= int(employee_id) <= int(max_value):
-                    employee = employee_tree.search(employee_id)
-                    print(str(employee_id) + " , " + str(employee.attCtr) + " , " + isEmployeeInOrOut(employee.attCtr))
+            printRangePresent(employee_tree, lines, prompt)
 
     sys.stdout.close()
     f.close()
+
+
+def printRangePresent(employee_tree, lines, prompt):
+    min_value = prompt[len(RANGE):].rstrip().split(":")[0]
+    max_value = prompt[len(RANGE):].rstrip().split(":")[1]
+    print("Range: " + str(min_value) + " to " + str(max_value))
+    print("Employee swipe : ")
+    for employee_id in lines:
+        employee_id = employee_id.rstrip()
+        if int(min_value) <= int(employee_id) <= int(max_value):
+            employee = employee_tree.search(employee_id)
+            print(str(employee_id) + " , " + str(employee.attCtr) + " , " + isEmployeeInOrOut(employee.attCtr))
+
+
+def checkEmpRec(employee_tree, prompt):
+    employee_id = prompt[len(CHECK_EMP):].rstrip()
+    employee = employee_tree.search(employee_id)
+    if employee is not None:
+        if isNumberEven(employee.attCtr):
+            print(
+                "Employee id " + str(employee.empId) + " swiped " + str(
+                    employee.attCtr) + " times today and is "
+                                       "currently outside "
+                                       "office")
+        else:
+            print(
+                "Employee id " + str(employee.empId) + " swiped " + str(
+                    employee.attCtr) + " times today and is "
+                                       "currently in "
+                                       "office")
+    else:
+        print("Employee id " + str(employee_id) + " did not swipe today")
 
 
 def isNumberEven(number):
