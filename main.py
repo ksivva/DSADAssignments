@@ -111,6 +111,7 @@ class EmpSearchTree:
         f = open(INPUT_FILE_NAME, READ_MODE)
         lines = f.readlines()
         count = 0
+        lines = set(lines)
         for line in lines:
             line = line.rstrip()
             if line.isnumeric():
