@@ -11,6 +11,6 @@ Employees that swiped more than 1 number of times today are:
 41 , 3
 Range: 10 to 100
 Employee swipe : 
-41 , 3 , in
 22 , 2 , out
 23 , 1 , in
+41 , 3 , in

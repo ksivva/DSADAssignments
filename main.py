@@ -18,7 +18,7 @@ FREQ_VISIT = "freqVisit:"
 
 CHECK_EMP = 'checkEmp:'
 
-
+# Node for containing data (tree node)
 class EmpNode:
     def __init__(self, EId):
         self.empId = EId
@@ -26,17 +26,22 @@ class EmpNode:
         self.left = None
         self.right = None
 
-
+# Binary search tree implementation
+# This is used for construction, insertion and searching of EmpNode refered above
 class EmpSearchTree:
+    # initializing the tree with no nodes i.e. initial tree with null nodes
     def __init__(self):
         self.root = None
-
+    # inserting a new employee id
     def insert(self, EId):
+        # checking if the root node is null which is first node creation else inserting to the appropriate branch
         if self.root is None:
             self.root = EmpNode(EId)
         else:
             self._insert(EId, self.root)
-
+    # if node already exists returns the same node 
+    # else if new id is less than then insert in left side of previous node(can be either root or leaf)
+    # else if new id is greater than current node insert right side of node
     def _insert(self, EId, curr_node):
         if EId == curr_node.empId:
             curr_node.attCtr = curr_node.attCtr + 1
@@ -83,7 +88,7 @@ class EmpSearchTree:
             return self._search(value, self.root)
         else:
             return None
-
+    # search operation based on empid
     def _search(self, value, curr_node):
         if value == curr_node.empId:
             return curr_node
@@ -99,21 +104,21 @@ class EmpSearchTree:
         f = open(INPUT_FILE_NAME, READ_MODE)
         lines = f.readlines()
         for line in lines:
-            line = line.rstrip()
+            line = line.strip()
             if line.isnumeric():
                 tree.insert(line)
             else:
                 print(str(line) + " is not a number. Please enter a numeric value")
         f.close()
 
-    def getSwipeRec(self):
+    def _getSwipeRec(self):
         tree = EmpSearchTree()
         f = open(INPUT_FILE_NAME, READ_MODE)
         lines = f.readlines()
         count = 0
         lines = set(lines)
         for line in lines:
-            line = line.rstrip()
+            line = line.strip()
             if line.isnumeric():
                 tree.insert(line)
                 count += 1
@@ -127,12 +132,12 @@ def main():
     count_of_employees_on_premises = 0
     sys.stdout = open(OUTPUT_FILE_NAME, WRITE_MODE)
 
-    emploee_count = employee_tree.getSwipeRec()
+    emploee_count = employee_tree._getSwipeRec()
     print("Total number of employees recorded today: " + str(emploee_count))
     f = open(INPUT_FILE_NAME, READ_MODE)
     lines = f.readlines()
     for line in lines:
-        line = line.rstrip()
+        line = line.strip()
         if line.isnumeric():
             employee_tree.insert(line)
         else:
@@ -149,7 +154,7 @@ def main():
         if prompt.startswith(CHECK_EMP, 0, len(prompt)):
             checkEmpRec(employee_tree, prompt)
         if prompt.startswith(FREQ_VISIT, 0, len(prompt)):
-            freq_visit = prompt[len(FREQ_VISIT):].rstrip()
+            freq_visit = prompt[len(FREQ_VISIT):].strip()
             print("Employees that swiped more than " + str(freq_visit) + " number of times today are: ")
             employee_tree.frequentVisitorRec(freq_visit)
         if prompt.startswith(RANGE, 0, len(prompt)):
@@ -160,13 +165,13 @@ def main():
 
 
 def printRangePresent(employee_tree, lines, prompt):
-    min_value = prompt[len(RANGE):].rstrip().split(":")[0]
-    max_value = prompt[len(RANGE):].rstrip().split(":")[1]
+    min_value = prompt[len(RANGE):].strip().split(":")[0]
+    max_value = prompt[len(RANGE):].strip().split(":")[1]
     print("Range: " + str(min_value) + " to " + str(max_value))
     print("Employee swipe : ")
-    lines = set(lines)
+    lines = sorted(set(lines))
     for employee_id in lines:
-        employee_id = employee_id.rstrip()
+        employee_id = employee_id.strip()
         if employee_id.isnumeric() and min_value.isnumeric() and max_value.isnumeric():
             if int(min_value) <= int(employee_id) <= int(max_value):
                 employee = employee_tree.search(employee_id)
@@ -177,7 +182,7 @@ def printRangePresent(employee_tree, lines, prompt):
 
 
 def checkEmpRec(employee_tree, prompt):
-    employee_id = prompt[len(CHECK_EMP):].rstrip()
+    employee_id = prompt[len(CHECK_EMP):].strip()
     if employee_id.isnumeric():
         employee = employee_tree.search(employee_id)
         if employee is not None:
