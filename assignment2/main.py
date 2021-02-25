@@ -38,16 +38,20 @@ def solve_knapsack(profits, weights, capacity):
             # take maximum
             dp[i][c] = max(profit1, profit2)
 
-    missionNumbersAndWeightsTuple = print_selected_elements(dp, weights, profits, capacity)
+    missionNumbersAndWeightsTuple = get_selected_missions_and_weights(dp, weights, profits, capacity)
     # maximum profit will be at the bottom-right corner.
     sys.stdout = open(OUTPUT_FILE_NAME, WRITE_MODE)
     print("The missions that should be funded : " + str(missionNumbersAndWeightsTuple[0]))
     print("Total Value: " + str(dp[n - 1][capacity]))
+    # Subtract the sum of the budgets for all the missions selected from 100 (capacity)
     print("Budget remaining: " + str(capacity - sum(missionNumbersAndWeightsTuple[1])))
     sys.stdout.close()
 
 
-def print_selected_elements(dp, weights, profits, capacity):
+# This method returns a tuple containing 2 elements:
+# 1) Comma separated string of the missions that are selected
+# 2) The corresponding budget for the mission
+def get_selected_missions_and_weights(dp, weights, profits, capacity):
     n = len(weights)
     totalProfit = dp[n - 1][capacity]
     missionsSelected = ""
@@ -68,7 +72,6 @@ def print_selected_elements(dp, weights, profits, capacity):
 
 
 def main():
-    # input: a set of items, each with a weight and a value
     val = []
     wt = []
     W = 100
@@ -76,8 +79,14 @@ def main():
     lines = f.readlines()
     for line in lines:
         values = line.strip().split('/')
-        wt.append(int(values[1]))
-        val.append(int(values[2]))
+        if values[1].isnumeric():
+            wt.append(int(values[1]))
+        else:
+            print("The budget is not a number. Please enter valid budget")
+        if values[2].isnumeric():
+            val.append(int(values[2]))
+        else:
+            print("The value is not numeric. Please enter valid value")
 
     solve_knapsack(val, wt, W)
 
