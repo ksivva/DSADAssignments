@@ -1,3 +1,14 @@
+import sys
+
+OUTPUT_FILE_NAME = "outputPS8.txt"
+
+INPUT_FILE_NAME = "inputPS8.txt"
+
+WRITE_MODE = "w"
+
+READ_MODE = "r"
+
+
 def solve_knapsack(profits, weights, capacity):
     # basic checks
     n = len(profits)
@@ -27,23 +38,33 @@ def solve_knapsack(profits, weights, capacity):
             # take maximum
             dp[i][c] = max(profit1, profit2)
 
-    print_selected_elements(dp, weights, profits, capacity)
+    missionNumbersAndWeightsTuple = print_selected_elements(dp, weights, profits, capacity)
     # maximum profit will be at the bottom-right corner.
-    return dp[n - 1][capacity]
+    sys.stdout = open(OUTPUT_FILE_NAME, WRITE_MODE)
+    print("The missions that should be funded : " + str(missionNumbersAndWeightsTuple[0]))
+    print("Total Value: " + str(dp[n - 1][capacity]))
+    print("Budget remaining: " + str(capacity - sum(missionNumbersAndWeightsTuple[1])))
+    sys.stdout.close()
 
 
 def print_selected_elements(dp, weights, profits, capacity):
-    print("Selected weights are: ")
     n = len(weights)
     totalProfit = dp[n - 1][capacity]
+    missionsSelected = ""
+    weightsOfSelectedMissions = []
     for i in range(n - 1, 0, -1):
         if totalProfit != dp[i - 1][capacity]:
-            print(str(weights[i]) + " ")
+            missionsSelected = missionsSelected + str(i + 1) + ","
+            weightsOfSelectedMissions.append(weights[i])
             capacity -= weights[i]
             totalProfit -= profits[i]
 
     if totalProfit != 0:
-        print(str(weights[0]) + " ")
+        weightsOfSelectedMissions.append(weights[0])
+    # Removing the last ',' from the string
+    missionsSelected = missionsSelected[:-1]
+    missionNumbersAndWeightsTuple = (missionsSelected, weightsOfSelectedMissions)
+    return missionNumbersAndWeightsTuple
 
 
 def main():
@@ -51,14 +72,14 @@ def main():
     val = []
     wt = []
     W = 100
-    f = open('inputPS8.txt', 'r')
+    f = open(INPUT_FILE_NAME, READ_MODE)
     lines = f.readlines()
     for line in lines:
         values = line.strip().split('/')
         wt.append(int(values[1]))
         val.append(int(values[2]))
 
-    print(solve_knapsack(val, wt, W))
+    solve_knapsack(val, wt, W)
 
 
 if __name__ == '__main__':
