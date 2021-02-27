@@ -30,7 +30,7 @@ class ISROMissionApprover:
         # Initializing selected_missions to empty list
         self.selected_missions = []
         # Initializing total profit for selected missions with 0
-        self.total_profit = 0
+        self.total_value = 0
         # Initializing remaining budget after selected missions with allocated_budget
         self.remaining_budget = self.allocated_budget
         
@@ -125,7 +125,6 @@ class ISROMissionApprover:
             file_handle=open(output_file_name,'wt')        
             file_handle.writelines(lines)
             file_handle.flush()
-            print(lines)
         except Exception as ex :
             print('Error in writing output file to disk ',sys.exc_info())
         finally:
@@ -137,8 +136,8 @@ class ISROMissionApprover:
         # Initializing remaining budget after selected missions with allocated_budget
         self.remaining_budget = self.allocated_budget
         itemNo = self.no_of_missions        
-        self.total_profit = self.mission_value_matrix[itemNo][self.allocated_budget] if self.mission_value_matrix[itemNo][self.allocated_budget] >=0 else 0
-        current_profit = self.total_profit
+        self.total_value = self.mission_value_matrix[itemNo][self.allocated_budget] if self.mission_value_matrix[itemNo][self.allocated_budget] >=0 else 0
+        current_profit = self.total_value
         self.selected_missions = []
 
         while itemNo > 0:
@@ -152,7 +151,7 @@ class ISROMissionApprover:
         selected_missions = ",".join(self.selected_missions)
         #print("The missions that should be funded: {0}".format(str (myList)))
         line1 = "The missions that should be funded: {0}".format(selected_missions)
-        line2 = "\nTotal value: {0}".format(self.total_profit)
+        line2 = "\nTotal value: {0}".format(self.total_value)
         line3 = "\nBudget remaining: {0}".format(self.remaining_budget)
         
         return [line1, line2, line3]
@@ -162,7 +161,7 @@ class ISROMissionApprover:
 def main():   
     try:
         obj = ISROMissionApprover("inputPS8.txt",100)
-        obj.total_profit = obj.find_maximum_profit(obj.budgets,obj.values,obj.allocated_budget,obj.no_of_missions)
+        obj.total_value = obj.find_maximum_profit(obj.budgets,obj.values,obj.allocated_budget,obj.no_of_missions)
         obj.write_output("outputPS8.txt")
     except Exception as e:
         print('Something went wrong while executing the program',sys.exc_info())
