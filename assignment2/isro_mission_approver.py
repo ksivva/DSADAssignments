@@ -96,7 +96,7 @@ class ISROMissionApprover:
             # base conditions
         if no_of_missions == 0 or allocated_budget == 0:
             return 0
-        # To reduce the steps which are repeating, we are picking up the values straitaway without repeating the
+        # To reduce the steps which are repeating, we are picking up the values straight away without repeating the
         # entire path in recursion tree
         if self.mission_value_matrix[no_of_missions][allocated_budget] != -1:
             return self.mission_value_matrix[no_of_missions][allocated_budget]
